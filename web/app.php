@@ -11,54 +11,10 @@
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
-$app = new Application();
-
-$env = getenv('APP_ENV') ?: 'prod';
-
-$configVars = array(
-    'app_dir' => __DIR__ . '/../app',
-);
-
-$app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__ . '/../app/config/config.yml.dist', $configVars));
-
-$localConfig = __DIR__ . '/../app/config/config.yml';
-if (is_readable($localConfig)) {
-    $app->register(new Igorw\Silex\ConfigServiceProvider($localConfig, $configVars));
-}
-
-$app->register(new Silex\Provider\TwigServiceProvider(), array(
-    'twig.path' => __DIR__ . '/../app/views',
-));
-$app->register(new Silex\Provider\SessionServiceProvider());
-
-/**
- * @param Silex\Application $app
- *
- * @return Google_Client
- */
-$app['google.client'] = function(Application $app) {
-    $client = new Google_Client();
-    $client->setClientId($app['google.client_id']);
-    $client->setClientSecret($app['google.client_secret']);
-    $client->setRedirectUri($app['google.redirect_uri']);
-
-    $client->addScope(array(
-        Google_Service_Oauth2::USERINFO_EMAIL,
-        Google_Service_Oauth2::USERINFO_PROFILE,
-        Google_Service_Plus::USERINFO_EMAIL,
-        Google_Service_Plus::USERINFO_PROFILE,
-        Google_Service_Plus::PLUS_ME,
-    ));
-
-    $client->setState('profile');
-    $client->setApprovalPrompt('force');
-
-    return $client;
-};
+$app = require __DIR__ . '/../app/bootstrap.php';
 
 $app->get('/', function(Application $app) {
+
     $session = $app['session'];
 
     /** @var Google_Client $client */
@@ -91,14 +47,9 @@ $app->get('/oauth2callback', function(Request $request, Application $app) {
 
         $app['session']->remove('access_token');
 
-        $client->setAccessToken($client->getAccessToken());
+        $googleValidator = $app['google.validator'];
 
-        $service = new Google_Service_Oauth2($client);
-        $userinfo = $service->userinfo_v2_me;
-
-        $user = $userinfo->get();
-        // check if it's astina.ch
-        if ($user->hd === $app['google.hosted_domain']) {
+        if ($googleValidator->isValid($client->getAccessToken())) {
             $app['session']->set('access_token', json_decode($client->getAccessToken(), true));
         } else {
             // @TODO Error message that domain doesn't match
@@ -113,51 +64,22 @@ $app->get('/api/opendoor', function(Application $app) {
     /** @var Google_Client $client */
     $client = $app['google.client'];
 
-    $client->setAccessToken(json_encode($accessToken));
+    $googleValidator = $app['google.validator'];
 
-    $service = new Google_Service_Oauth2($client);
-    $userinfo = $service->userinfo_v2_me;
-
-    $user = $userinfo->get();
-    if ($user->hd !== $app['google.hosted_domain']) {
+    if (!$googleValidator->isValid(json_encode($accessToken))) {
+        // @TODO Error message that domain doesn't match
         return $app->redirect('/logout');
     }
 
-    $url = $app['spark_core.url'];
-    $fields = array(
-        'access_token' => $app['spark_core.access_token'],
-    );
+    try
+    {
+        $sparkClient = $app['spark.door'];
+        $sparkClient->exec();
 
-    //open connection
-    $ch = curl_init();
+        // @TODO success message
 
-    //set the url, number of POST vars, POST data
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($fields));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-        'Content-type: application/x-www-form-urlencoded'
-    ));
-
-    $result = curl_exec($ch);
-    $error = curl_error($ch);
-    $errorNo = curl_errno($ch);
-    curl_close($ch);
-
-    if ($errorNo !== 0) {
-        // @TODO error $error
-
-
-    } else {
-        $data = json_decode($result, true);
-
-        if (isset($data['error'])) {
-            // @TODO error
-        } else {
-            // @TODO success
-        }
+    } catch (InvalidArgumentException $e) {
+        // @TODO error message
     }
 
     return $app->redirect('/');
