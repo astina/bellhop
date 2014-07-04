@@ -1,0 +1,16 @@
+<html>
+    <head>
+        <title>Astina Bellhop</title>
+    </head>
+
+    <body>
+    {% if access_token is empty %}
+        Google Login
+        <a href="{{ authUrl }}">{{ authUrl }}</a>
+    {% else %}
+        <a href="/api/opendoor">Open</a>
+        |
+        <a href="/logout">X</a>
+    {% endif %}
+    </body>
+</html>

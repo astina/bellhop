@@ -1,0 +1,25 @@
+{
+    "name": "astina/bellhop",
+    "description": "Door opener",
+    "authors": [
+        {
+            "name": "Fredi Pevcin",
+            "email": "fpevcin@astina.ch"
+        }
+    ],
+    "autoload": {
+        "psr-0": { "": "src/" }
+    },
+    "require": {
+        "silex/silex": "~1.2",
+        "google/apiclient": "1.0.*@dev",
+        "twig/twig": ">=1.8,<2.0-dev",
+        "igorw/config-service-provider": "~1.2",
+        "symfony/yaml": "~2.1"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
