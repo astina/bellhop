@@ -54,10 +54,10 @@ $app['google.client'] = function(Application $app) {
 
     $client->addScope(array(
         Google_Service_Oauth2::USERINFO_EMAIL,
-        Google_Service_Oauth2::USERINFO_PROFILE,
-        Google_Service_Plus::USERINFO_EMAIL,
-        Google_Service_Plus::USERINFO_PROFILE,
-        Google_Service_Plus::PLUS_ME,
+//        Google_Service_Oauth2::USERINFO_PROFILE,
+//        Google_Service_Plus::USERINFO_EMAIL,
+//        Google_Service_Plus::USERINFO_PROFILE,
+//        Google_Service_Plus::PLUS_ME,
     ));
 
     $client->setState('profile');

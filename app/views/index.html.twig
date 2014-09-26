@@ -5,8 +5,7 @@
 
     <body>
     {% if access_token is empty %}
-        Google Login
-        <a href="{{ authUrl }}">{{ authUrl }}</a>
+        <a href="{{ authUrl }}">Google Login</a>
     {% else %}
         <a href="/api/opendoor">Open</a>
         |
