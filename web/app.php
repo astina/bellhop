@@ -28,9 +28,16 @@ $app->get('/', function(Application $app) {
 
     $accessToken = $session->get('access_token');
 
+    $errors = $app['session']->getFlashBag()->get('error');
+
+    if (empty($accessToken) && empty($errors)) {
+        return $app->redirect($url);
+    }
+
     return $app['twig']->render('index.html.twig', array(
         'authUrl'      => $url,
         'access_token' => $accessToken,
+        'errors'       => $errors,
     ));
 })->bind('home');
 
@@ -51,13 +58,12 @@ $app->get('/oauth2callback', function(Request $request, Application $app) {
 
         $app['session']->remove('access_token');
 
-        $googleValidator = $app['validator'];
+        $validator = $app['validator'];
 
-        if ($googleValidator->isValid($client->getAccessToken())) {
+        if ($validator->isValid($client->getAccessToken())) {
             $app['session']->set('access_token', json_decode($client->getAccessToken(), true));
         } else {
-            // @TODO Error message that domain doesn't match
-
+            $app['session']->getFlashBag()->add('error', 'Your credentials are insufficient');
             return $app->redirect('/logout');
         }
     }
@@ -68,24 +74,20 @@ $app->get('/oauth2callback', function(Request $request, Application $app) {
 $app->get('/api/opendoor', function(Application $app) {
     $accessToken = $app['session']->get('access_token');
 
-    $googleValidator = $app['validator'];
-
+    $validator = $app['validator'];
     try
     {
-        if (!$googleValidator->isValid(json_encode($accessToken))) {
-            // @TODO Error message not valid
+        if (!$validator->isValid(json_encode($accessToken))) {
+            $app['session']->getFlashBag()->add('error', 'Your credentials are insufficient');
             return $app->redirect('/logout');
         }
 
         $sparkClient = $app['spark.door'];
         $sparkClient->exec();
-
-        // @TODO success message
-
     } catch (Google_Auth_Exception $e) {
         return $app->redirect('/logout');
     } catch (InvalidArgumentException $e) {
-        // @TODO error message -- problem with spark communication
+        $app['session']->getFlashBag()->add('error', $e->getMessage());
     }
 
     return $app->redirect('/');

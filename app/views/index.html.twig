@@ -10,6 +10,9 @@
     <body>
     <div class="wrapper">
         <div class="wrapper-inner">
+        {% for message in errors %}
+            {{ message }}
+        {% endfor %}
         {% if access_token is empty %}
             <a  class="btn-google-auth btn" href="{{ authUrl }}">Google Login</a>
         {% else %}
