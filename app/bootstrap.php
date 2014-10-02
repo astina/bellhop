@@ -39,7 +39,9 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => $app['app_dir'] . '/views',
 ));
 
-$app->register(new Silex\Provider\SessionServiceProvider());
+$app->register(new Silex\Provider\SessionServiceProvider(), array(
+    'cookie_lifetime' => 3600 * 24 * 14 // two weeks
+));
 
 // dependency
 /**
