@@ -8,8 +8,9 @@
  * @copyright 2014 Astina AG (http://astina.ch)
  */
 
-use Google\Validator;
 use Silex\Application;
+use Validator\Google\EmailRule;
+use Validator\Google\HostedDomainRule;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -54,20 +55,28 @@ $app['google.client'] = function(Application $app) {
 
     $client->addScope(array(
         Google_Service_Oauth2::USERINFO_EMAIL,
-//        Google_Service_Oauth2::USERINFO_PROFILE,
-//        Google_Service_Plus::USERINFO_EMAIL,
-//        Google_Service_Plus::USERINFO_PROFILE,
-//        Google_Service_Plus::PLUS_ME,
     ));
 
-    $client->setState('profile');
-    $client->setApprovalPrompt('force');
+    $client->setAccessType('online');
+    $client->setApprovalPrompt('auto');
 
     return $client;
 };
 
-$app['google.validator'] = function(Application $app) {
-    return new Validator($app['google.client'], $app['google.hosted_domain']);
+$app['validator'] = function(Application $app) {
+    $validator = new Validator();
+
+    if (!empty($app['rule.google.hosted_domain'])) {
+        $rule = new HostedDomainRule($app['google.client'], $app['rule.google.hosted_domain']);
+        $validator->addRule($rule);
+    }
+
+    if (!empty($app['rule.google.email'])) {
+        $rule = new EmailRule($app['google.client'], $app['rule.google.email']);
+        $validator->addRule($rule);
+    }
+
+    return $validator;
 };
 
 $app['spark.door'] = function(Application $app) {

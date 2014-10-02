@@ -1,50 +1,51 @@
 <?php
 /**
- * File containing Validator class
+ * File containing HostedDomainRule class
  *
  * @category  App
- * @package   Package
+ * @package   Validator
  * @author    Fredi Pevcin <fpevcin@astina.ch>
  * @copyright 2014 Astina AG (http://astina.ch)
  */
 
-namespace Google;
+namespace Validator\Google;
 
 use Google_Client;
 use Google_Service_Oauth2;
+use Validator\RuleInterface;
 
 /**
- * Short description for class Validator
+ * Short description for class HostedDomainRule
  *
  * @category  App
  * @package   Google
  * @author    Fredi Pevcin <fpevcin@astina.ch>
  * @copyright 2014 Astina AG (http://astina.ch)
  */
-class Validator
+class HostedDomainRule implements RuleInterface
 {
     /**
      * @var Google_Client
      */
     private $googleClient;
+
     /**
-     * @var string
+     * @var array
      */
-    private $hostedDomain;
+    private $hostedDomains;
 
     /**
      * @param Google_Client $googleClient
-     * @param string        $hostedDomain
+     * @param array         $hostedDomains
      */
-    public function __construct(Google_Client $googleClient, $hostedDomain)
+    public function __construct(Google_Client $googleClient, array $hostedDomains)
     {
-        $this->googleClient = $googleClient;
-        $this->hostedDomain = $hostedDomain;
+        $this->googleClient  = $googleClient;
+        $this->hostedDomains = $hostedDomains;
     }
 
     /**
      * @param $accessToken
-     *
      * @return bool
      */
     public function isValid($accessToken)
@@ -56,7 +57,6 @@ class Validator
 
         $user = $userinfo->get();
 
-        // check if it's astina.ch
-        return $user->hd === $this->hostedDomain;
+        return in_array($user->hd, $this->hostedDomains);
     }
 }

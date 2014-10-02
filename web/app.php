@@ -51,12 +51,14 @@ $app->get('/oauth2callback', function(Request $request, Application $app) {
 
         $app['session']->remove('access_token');
 
-        $googleValidator = $app['google.validator'];
+        $googleValidator = $app['validator'];
 
         if ($googleValidator->isValid($client->getAccessToken())) {
             $app['session']->set('access_token', json_decode($client->getAccessToken(), true));
         } else {
             // @TODO Error message that domain doesn't match
+
+            return $app->redirect('/logout');
         }
     }
 
@@ -66,12 +68,12 @@ $app->get('/oauth2callback', function(Request $request, Application $app) {
 $app->get('/api/opendoor', function(Application $app) {
     $accessToken = $app['session']->get('access_token');
 
-    $googleValidator = $app['google.validator'];
+    $googleValidator = $app['validator'];
 
     try
     {
         if (!$googleValidator->isValid(json_encode($accessToken))) {
-            // @TODO Error message that domain doesn't match
+            // @TODO Error message not valid
             return $app->redirect('/logout');
         }
 

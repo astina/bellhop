@@ -1,7 +1,9 @@
-debug:                   false
-google.hosted_domain:    astina.ch
-google.client_id:        ~
-google.client_secret:    ~
-google.redirect_uri:     ~
-spark_core.url:          ~
-spark_core.access_token: ~
+debug:                     false
+google.client_id:          ~
+google.client_secret:      ~
+google.redirect_uri:       ~
+spark_core.url:            ~
+spark_core.access_token:   ~
+
+rule.google.hosted_domain: []
+rule.google.email:         []
