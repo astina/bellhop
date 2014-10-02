@@ -2,8 +2,10 @@ body, html {
 	position: relative;
 	margin: 0;
 	background-color: #fff;
+	width: 100%;
 	height: 100%;
 	font-family: Verdana, sans-serif;
+	overflow: hidden;
 }
 body {
 	display: table;
@@ -46,7 +48,7 @@ a {
 	margin: -40px 0 0 -60px;
 	width: 120px;
 	height: 80px;
-	background: url(http://fineprintnyc.com/images/blog/history-of-logos/google/google-logo.png) center center no-repeat;
+	background: url(../images/google-logo-color.png) center center no-repeat;
 	background-size: contain;
 }
 
