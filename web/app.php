@@ -11,6 +11,10 @@
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 
+if (php_sapi_name() == 'cli-server' && preg_match('/\.(?:png|jpg|jpeg|gif|css|js)$/', $_SERVER['REQUEST_URI'])) {
+    return false;
+}
+
 $app = require __DIR__ . '/../app/bootstrap.php';
 
 $app->get('/', function(Application $app) {
