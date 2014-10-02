@@ -49,6 +49,10 @@ class Validator
      */
     public function isValid($accessToken)
     {
+        if ($this->rules === array()) {
+            return true;
+        }
+
         foreach ($this->rules as $rule) {
             if ($rule->isValid($accessToken)) {
                 return true;
