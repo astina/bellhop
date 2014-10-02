@@ -73,13 +73,27 @@ a {
 	text-indent: -9999px;
 }
 
+
 .btn-unlock:before {
+	content: "";
+	display: block;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin: -74px 0 0 -60px;
+	width: 120px;
+	height: 148px;
+	background: url(../images/lock-icons.png) center bottom no-repeat;
+	background-size: 120px;
+}
+
+.btn-unlock:after {
 	content: "Unlock.";
 	display: block;
 	position: absolute;
 	left: 50%;
 	top: 50%;
-	margin: -40px 0 0 -90px;
+	margin: -5px 0 0 -90px;
 	width: 180px;
 	height: 80px;
 	line-height: 80px;
@@ -99,8 +113,15 @@ a {
 		font-size: 22px;
 		margin: 70px 0 0;
 	}
-
+	
 	.btn-unlock:before {
+		margin: -170px 0 0 -110px;
+		width: 220px;
+		height: 290px;
+		background-size: 220px;
+	}
+	.btn-unlock:after {
+		margin-top: 10px;
 		font-size: 44px;
 	}
 }

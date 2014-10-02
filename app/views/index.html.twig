@@ -4,18 +4,18 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="/css/styles.css">
+        <link rel="icon" sizes="196x196" href="/images/icon-highres.png">
     </head>
 
     <body>
     <div class="wrapper">
         <div class="wrapper-inner">
-        {#% if access_token is empty %}
+        {% if access_token is empty %}
             <a  class="btn-google-auth btn" href="{{ authUrl }}">Google Login</a>
-        {% else %#}
+        {% else %}
             <a class="btn-unlock btn" href="/api/opendoor">Open</a>
-            
             <!--<a class="btn-logout" href="/logout">X</a>-->
-        {#% endif %#}
+        {% endif %}
         </div>
     </div>
     </body>
