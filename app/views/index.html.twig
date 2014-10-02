@@ -1,15 +1,22 @@
 <html>
     <head>
         <title>Astina Bellhop</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/css/styles.css">
     </head>
 
     <body>
-    {% if access_token is empty %}
-        <a href="{{ authUrl }}">Google Login</a>
-    {% else %}
-        <a href="/api/opendoor">Open</a>
-        |
-        <a href="/logout">X</a>
-    {% endif %}
+    <div class="wrapper">
+        <div class="wrapper-inner">
+        {#% if access_token is empty %}
+            <a  class="btn-google-auth btn" href="{{ authUrl }}">Google Login</a>
+        {% else %#}
+            <a class="btn-unlock btn" href="/api/opendoor">Open</a>
+            
+            <!--<a class="btn-logout" href="/logout">X</a>-->
+        {#% endif %#}
+        </div>
+    </div>
     </body>
 </html>
