@@ -85,6 +85,7 @@ $app->get('/api/opendoor', function(Application $app) {
         $sparkClient = $app['spark.door'];
         $sparkClient->exec();
     } catch (Google_Auth_Exception $e) {
+        $app['session']->getFlashBag()->add('error', 'Your credentials are insufficient');
         return $app->redirect('/logout');
     } catch (InvalidArgumentException $e) {
         $app['session']->getFlashBag()->add('error', $e->getMessage());
