@@ -40,7 +40,9 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 ));
 
 $app->register(new Silex\Provider\SessionServiceProvider(), array(
-    'cookie_lifetime' => 3600 * 24 * 14 // two weeks
+    'session.storage.options' => array(
+        'session.cookie_lifetime' => 3600 * 24 * 14, // two weeks
+    )
 ));
 
 // dependency
