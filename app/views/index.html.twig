@@ -3,23 +3,31 @@
         <title>Astina Bellhop</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        {#<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900,400italic&amp;subset=latin" rel="stylesheet">#}
         <link rel="stylesheet" type="text/css" href="/css/styles.css">
         <link rel="icon" sizes="196x196" href="/images/icon-highres.png">
     </head>
+    
+    {#VEN{% set access_token = null %}!#}
 
-    <body>
-    <div class="wrapper">
-        <div class="wrapper-inner">
-        {% for message in errors %}
-            {{ message }}
-        {% endfor %}
-        {% if access_token is empty %}
-            <a  class="btn-google-auth btn" href="{{ authUrl }}">Google Login</a>
-        {% else %}
-            <a class="btn-unlock btn" href="/api/opendoor">Open</a>
-            {#<a class="btn-logout" href="/logout">X</a>#}
-        {% endif %}
+    <body{% if access_token is not empty %} class="authenticated"{% endif %}>
+        <div class="wrapper-table">
+            <div class="wrapper">
+                <div class="wrapper-inner">
+                {% if access_token is empty %}
+                    <a  class="btn-google-auth btn" href="{{ authUrl }}">Google Login</a>
+                {% else %}
+                    <a class="btn-unlock btn" href="/api/opendoor">Open</a>
+                    {#<a class="btn-logout" href="/logout">logout</a>#}
+                {% endif %}
+                {#VEN!<div class="message"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veniam, aliquid!</p></div>#}
+                {% for message in errors %}
+                    <div class="message"><p>{{ message }}</p></div>
+                {% endfor %}
+                </div>
+            </div>
         </div>
-    </div>
+
+        <footer class="footer">by <a class="astina" href="https://www.astina.ch" target="_blank">astina</a></footer>
     </body>
 </html>
