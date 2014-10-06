@@ -9,19 +9,37 @@ body, html {
 }
 body {
 	color: #333;
+	/*font-family: "Source Sans Pro", sans-serif;*/
 }
 
 .authenticated {
 	color: #fff;
+	background-color: #0177c7;
 }
 
 a {
 	text-decoration: none;
 }
 
-.wrapper-table {
+.logo {
 	position: absolute;
+	left: 20px;
+	top: 20px;
+	width: 100px;
+	height: 30px;
+	background: url(/images/bellhop-logo.png) 0 0 no-repeat;
+	background-size: contain;
+	text-indent: -9999px;
+}
+.authenticated .logo {
+	background-image: url(/images/bellhop-logo-white.png)
+}
+
+.wrapper-table {
 	display: table;
+	position: absolute;
+	left: 0;
+	top: 0;
 	width: 100%;
 	height: 100%;
 }
@@ -43,7 +61,7 @@ a {
 	height: 200px;*/
 	width: 100%;
 	height: 100%;
-	background-color: #fff;
+	/*background-color: #fff;*/
 	/*border: 1px solid #444;*/
 	/*border-radius: 3px;*/
 	text-indent: -9999px;
@@ -82,7 +100,7 @@ a {
 	width: 100%;
 	height: 100%;
 	color: #fff;
-	background-color: #0177c7;
+	/*background-color: #0177c7;*/
 	text-indent: -9999px;
 }
 
@@ -111,6 +129,7 @@ a {
 	height: 80px;
 	line-height: 80px;
 	font-size: 24px;
+	/*font-weight: 600;*/
 	text-align: center;
 	text-indent: 0;
 }
@@ -124,8 +143,8 @@ a {
 	text-align: center;
 	opacity: 0;
 	z-index: 10;
-	-webkit-animation: ticker 5s;
-	animation: ticker 5s;
+	-webkit-animation: toast 5s;
+	animation: toast 5s;
 }
 .message p {
 	display: inline-block;
@@ -143,15 +162,15 @@ a {
 	position: absolute;
 	bottom: 10px;
 	right: 10px;
-	font-size: 11px;
+	font-size: 10px;
 }
 .astina {
 	position: relative;
 	display: inline-block;
 	top: -1px;
-	margin-left: 3px;
-	width: 70px;
-	height: 20px;
+	margin-left: 1px;
+	width: 50px;
+	height: 15px;
 	text-indent: -9999px;
 	vertical-align: bottom;
 	background: url(/images/astina-logo-blue.png) 0 0 no-repeat;
@@ -162,7 +181,7 @@ a {
 	background-image: url(/images/astina-logo.png);
 }
 
-@-webkit-keyframes ticker {
+@-webkit-keyframes toast {
     0%   {opacity: 0; left: 0;}
     10%   {opacity: 0;}
     19%   {opacity: 1;}
@@ -170,7 +189,7 @@ a {
     100%  {opacity: 0; left: 0;}
 }
 
-@keyframes ticker {
+@keyframes toast {
     0%   {opacity: 0; left: 0;}
     10%   {opacity: 0;}
     19%   {opacity: 1;}
@@ -178,7 +197,12 @@ a {
     100%  {opacity: 0; left: 0;}
 }
 
-@media (min-width: 600px) {
+@media (min-width: 600px) and (min-height: 500px) {
+	.logo {
+		width: 200px;
+		height: 60px;
+	}
+
 	.btn-google-auth:before {
 		margin: -140px 0 0 -160px;
 		width: 320px;
@@ -201,5 +225,15 @@ a {
 	.btn-unlock:after {
 		margin-top: 10px;
 		font-size: 44px;
+	}
+
+	.footer {
+		font-size: 11px;
+	}
+	.astina {
+		top: -2px;
+		margin-left: 3px;
+		width: 70px;
+		height: 20px;
 	}
 }

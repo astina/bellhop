@@ -3,14 +3,16 @@
         <title>Astina Bellhop</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        {#<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900,400italic&amp;subset=latin" rel="stylesheet">#}
+        <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" type="text/css" href="/css/styles.css">
         <link rel="icon" sizes="196x196" href="/images/icon-highres.png">
+        <link rel="apple-touch-icon-precomposed" sizes="196x196" href="/images/icon-highres.png">
     </head>
     
-    {#VEN{% set access_token = null %}!#}
+    {#VEN{% set access_token = 1 %}#}
 
     <body{% if access_token is not empty %} class="authenticated"{% endif %}>
+        <div class="logo">bellhop</div>
         <div class="wrapper-table">
             <div class="wrapper">
                 <div class="wrapper-inner">
