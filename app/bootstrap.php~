@@ -41,7 +41,6 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 
 $app->register(new Silex\Provider\SessionServiceProvider(), array(
     'session.storage.options' => array(
-        'session.gc_maxlifetime' => 3600 * 24 * 14, // two weeks
         'session.cookie_lifetime' => 3600 * 24 * 14, // two weeks
     )
 ));
