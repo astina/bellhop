@@ -69,7 +69,7 @@ class Client
         $data = json_decode($result, true);
 
         if (isset($data['error'])) {
-            throw new InvalidArgumentException($data['error'], -1);
+            throw new InvalidArgumentException(sprintf('%s (%s)', $data['error'], $data['error_description']), $data['code']);
         }
 
         return $data;

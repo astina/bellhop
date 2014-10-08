@@ -11,11 +11,12 @@
         "psr-0": { "": "src/" }
     },
     "require": {
-        "silex/silex": "~1.2",
-        "google/apiclient": "1.0.*@dev",
-        "twig/twig": ">=1.8,<2.0-dev",
+        "silex/silex":                   "~1.2",
+        "google/apiclient":              "1.0.*@dev",
+        "twig/twig":                     ">=1.8,<2.0-dev",
         "igorw/config-service-provider": "~1.2",
-        "symfony/yaml": "~2.1"
+        "symfony/yaml":                  "~2.1",
+        "monolog/monolog":               "~1.0"
     },
     "config": {
         "bin-dir": "bin"

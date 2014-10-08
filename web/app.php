@@ -17,7 +17,7 @@ if (php_sapi_name() == 'cli-server' && preg_match('/\.(?:png|jpg|jpeg|gif|css|js
 
 $app = require __DIR__ . '/../app/bootstrap.php';
 
-$app->get('/', function(Application $app) {
+$app->get('/', function(Bellhop $app) {
 
     $session = $app['session'];
 
@@ -34,36 +34,44 @@ $app->get('/', function(Application $app) {
         return $app->redirect($url);
     }
 
-    return $app['twig']->render('index.html.twig', array(
+    return $app->render('index.html.twig', array(
         'authUrl'      => $url,
         'access_token' => $accessToken,
         'errors'       => $errors,
     ));
 })->bind('home');
 
-$app->get('/logout', function(Application $app) {
+$app->get('/logout', function(Bellhop $app) {
     $app['session']->clear();
 
     return $app->redirect('/');
 });
 
-$app->get('/oauth2callback', function(Request $request, Application $app) {
+$app->get('/oauth2callback', function(Request $request, Bellhop $app) {
 
     $code = $request->get('code');
     if ($code) {
+        $app['session']->clear();
+
         /** @var Google_Client $client */
         $client = $app['google.client'];
 
         $client->authenticate($code);
 
-        $app['session']->remove('access_token');
-
         $validator = $app['validator'];
+
+        $service = new Google_Service_Oauth2($client);
+        $userinfo = $service->userinfo_v2_me;
+        $user = $userinfo->get();
 
         if ($validator->isValid($client->getAccessToken())) {
             $app['session']->set('access_token', json_decode($client->getAccessToken(), true));
+            $app['session']->set('user_info', $user->toSimpleObject());
+
+            $app->log('Access granted', ['email' => $user->email]);
         } else {
             $app['session']->getFlashBag()->add('error', 'Your credentials are insufficient');
+            $app->log('Insufficient credentials', ['email' => $user->email], \Monolog\Logger::ERROR);
             return $app->redirect('/logout');
         }
     }
@@ -71,23 +79,29 @@ $app->get('/oauth2callback', function(Request $request, Application $app) {
     return $app->redirect('/');
 });
 
-$app->get('/api/opendoor', function(Application $app) {
+$app->get('/api/opendoor', function(Bellhop $app) {
     $accessToken = $app['session']->get('access_token');
+    $userInfo = $app['session']->get('user_info');
 
     $validator = $app['validator'];
     try
     {
+        $app->log('Open door', ['email' => $userInfo->email]);
+
         if (!$validator->isValid(json_encode($accessToken))) {
             $app['session']->getFlashBag()->add('error', 'Your credentials are insufficient');
+            $app->log('Insufficient credentials', ['email' => $userInfo->email], \Monolog\Logger::ERROR);
             return $app->redirect('/logout');
         }
 
         $sparkClient = $app['spark.door'];
         $sparkClient->exec();
     } catch (Google_Auth_Exception $e) {
+        $app->log('Insufficient credentials', ['exception' => $e, 'email' => $userInfo->email], \Monolog\Logger::ERROR);
         $app['session']->getFlashBag()->add('error', 'Your credentials are insufficient');
         return $app->redirect('/logout');
     } catch (InvalidArgumentException $e) {
+        $app->log('Communication error', ['exception' => $e, 'email' => $userInfo->email], \Monolog\Logger::ERROR);
         $app['session']->getFlashBag()->add('error', $e->getMessage());
     }
 

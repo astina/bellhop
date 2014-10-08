@@ -7,3 +7,5 @@ spark_core.access_token:   ~
 
 rule.google.hosted_domain: []
 rule.google.email:         []
+
+error_notify:              ~

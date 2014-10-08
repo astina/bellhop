@@ -1,4 +1,6 @@
 /vendor/
+/app/data/
+/app/logs/
 /app/config/config.yml
 composer.phar
 

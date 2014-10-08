@@ -8,13 +8,12 @@
  * @copyright 2014 Astina AG (http://astina.ch)
  */
 
-use Silex\Application;
 use Validator\Google\EmailRule;
 use Validator\Google\HostedDomainRule;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$app = new Application();
+$app = new Bellhop();
 
 $env = getenv('APP_ENV') ?: 'prod';
 
@@ -40,10 +39,18 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 ));
 
 $app->register(new Silex\Provider\SessionServiceProvider(), array(
+    'session.storage.save_path' => $app['app_dir'] . '/data/session',
     'session.storage.options' => array(
-        'session.gc_maxlifetime' => 3600 * 24 * 14, // two weeks
-        'session.cookie_lifetime' => 3600 * 24 * 14, // two weeks
+        'session.gc_maxlifetime'    => 3600 * 24 * 14, // two weeks
+        'session.cookie_lifetime'   => 3600 * 24 * 14, // two weeks
     )
+));
+
+$app->register(new Silex\Provider\MonologServiceProvider(), array(
+    'monolog.logfile' => __DIR__.'/logs/app.log',
+    'monolog.name' => 'bellhop',
+    'monolog.level' => 'warning',
+
 ));
 
 // dependency
@@ -52,7 +59,7 @@ $app->register(new Silex\Provider\SessionServiceProvider(), array(
  *
  * @return Google_Client
  */
-$app['google.client'] = function(Application $app) {
+$app['google.client'] = function(Bellhop $app) {
     $client = new Google_Client();
     $client->setClientId($app['google.client_id']);
     $client->setClientSecret($app['google.client_secret']);
@@ -68,7 +75,7 @@ $app['google.client'] = function(Application $app) {
     return $client;
 };
 
-$app['validator'] = function(Application $app) {
+$app['validator'] = function(Bellhop $app) {
     $validator = new Validator();
 
     if (!empty($app['rule.google.hosted_domain'])) {
@@ -84,8 +91,12 @@ $app['validator'] = function(Application $app) {
     return $validator;
 };
 
-$app['spark.door'] = function(Application $app) {
+$app['spark.door'] = function(Bellhop $app) {
     return new Spark\Client($app['spark_core.url'], $app['spark_core.access_token']);
 };
+
+if (!empty($app['error_notify'])) {
+    $app['monolog']->pushHandler(new \Monolog\Handler\NativeMailerHandler($app['error_notify'], 'Bellhop error', 'bellhop'));
+}
 
 return $app;
