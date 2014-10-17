@@ -20,5 +20,5 @@ namespace Validator;
  */
 interface RuleInterface
 {
-    public function isValid($accessToken);
+    public function isValid(Context $context);
 }

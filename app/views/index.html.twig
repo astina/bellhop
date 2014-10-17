@@ -8,21 +8,18 @@
         <link rel="icon" sizes="196x196" href="/images/icon-highres.png">
         <link rel="apple-touch-icon-precomposed" sizes="196x196" href="/images/icon-highres.png">
     </head>
-    
-    {#VEN{% set access_token = 1 %}#}
 
-    <body{% if access_token is not empty %} class="authenticated"{% endif %}>
+    <body{% if userInfo is not empty %} class="authenticated"{% endif %}>
         <div class="logo">bellhop</div>
         <div class="wrapper-table">
             <div class="wrapper">
                 <div class="wrapper-inner">
-                {% if access_token is empty %}
+                {% if userInfo is empty %}
                     <a  class="btn-google-auth btn" href="{{ authUrl }}">Google Login</a>
                 {% else %}
                     <a class="btn-unlock btn" href="/api/opendoor">Open</a>
                     {#<a class="btn-logout" href="/logout">logout</a>#}
                 {% endif %}
-                {#VEN!<div class="message"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veniam, aliquid!</p></div>#}
                 {% for message in errors %}
                     <div class="message"><p>{{ message }}</p></div>
                 {% endfor %}

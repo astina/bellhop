@@ -7,6 +7,8 @@
  * @author    Fredi Pevcin <fpevcin@astina.ch>
  * @copyright 2014 Astina AG (http://astina.ch)
  */
+
+use Validator\Context;
 use Validator\RuleInterface;
 
 /**
@@ -34,7 +36,8 @@ class Validator
 
     /**
      * @param RuleInterface $rule
-     * @return $this
+     *
+     * @return Validator
      */
     public function addRule(RuleInterface $rule)
     {
@@ -42,19 +45,20 @@ class Validator
 
         return $this;
     }
+
     /**
-     * @param $accessToken
+     * @param Context $context
      *
      * @return bool
      */
-    public function isValid($accessToken)
+    public function isValid(Context $context)
     {
         if ($this->rules === array()) {
             return true;
         }
 
         foreach ($this->rules as $rule) {
-            if ($rule->isValid($accessToken)) {
+            if ($rule->isValid($context)) {
                 return true;
             }
         }

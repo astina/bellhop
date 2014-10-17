@@ -5,7 +5,7 @@ google.redirect_uri:       ~
 spark_core.url:            ~
 spark_core.access_token:   ~
 
-rule.google.hosted_domain: []
-rule.google.email:         []
+rule.hosted_domain:        []
+rule.email:                []
 
 error_notify:              ~

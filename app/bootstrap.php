@@ -8,8 +8,8 @@
  * @copyright 2014 Astina AG (http://astina.ch)
  */
 
-use Validator\Google\EmailRule;
-use Validator\Google\HostedDomainRule;
+use Validator\EmailRule;
+use Validator\HostedDomainRule;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -78,13 +78,13 @@ $app['google.client'] = function(Bellhop $app) {
 $app['validator'] = function(Bellhop $app) {
     $validator = new Validator();
 
-    if (!empty($app['rule.google.hosted_domain'])) {
-        $rule = new HostedDomainRule($app['google.client'], $app['rule.google.hosted_domain']);
+    if (!empty($app['rule.hosted_domain'])) {
+        $rule = new HostedDomainRule($app['rule.hosted_domain']);
         $validator->addRule($rule);
     }
 
-    if (!empty($app['rule.google.email'])) {
-        $rule = new EmailRule($app['google.client'], $app['rule.google.email']);
+    if (!empty($app['rule.email'])) {
+        $rule = new EmailRule($app['rule.email']);
         $validator->addRule($rule);
     }
 
